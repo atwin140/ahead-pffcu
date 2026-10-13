@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: keycloak
+
+commonAnnotations:
+  cluster.name: hub
+  cluster.role: management
+
+resources:
+- ../../base
+- storageclass-synology-ext4.yaml
+- postgresql-secret.yaml
+- postgresql.yaml
+- keycloak.yaml
+- keycloak-route.yaml
+- keycloak-realm-openshift.yaml
+- postgresql-backup.yaml

@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: odf-client
+  namespace: openshift-gitops
+  labels:
+    app.kubernetes.io/part-of: cluster-onboarding
+    component: odf-client
+    group.cluster: eqip
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: cluster-config
+  source:
+    repoURL: "git@github.com:atwin140/ahead-eqip.git"
+    targetRevision: main
+    path: components/odf-client/overlays/eqip
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openshift-storage
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
+  ignoreDifferences:
+  - group: operators.coreos.com
+    kind: Subscription
+    jsonPointers:
+    - /status
+  - group: ocs.openshift.io
+    kind: StorageClient
+    jsonPointers:
+    - /status
+  revisionHistoryLimit: 10

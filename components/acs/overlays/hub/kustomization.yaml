@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+commonAnnotations:
+  cluster.name: hub
+  cluster.role: management
+
+resources:
+- acs-declarative-auth.yaml
+- central-certificate.yaml
+- central.yaml
+
+patches:
+- path: central-declarative-config-patch.yaml

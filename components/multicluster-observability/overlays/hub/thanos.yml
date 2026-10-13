@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: thanos-object-storage
+  namespace: open-cluster-management-observability
+type: Opaque
+stringData:
+  thanos.yaml: |
+    type: s3
+    config:
+      bucket: observability-thanos
+      endpoint: minio.open-cluster-management-observability.svc.cluster.local:9000
+      insecure: true
+      access_key: minioadmin
+      secret_key: yPIWZHZQHXO6c6lgYUMOh23x8aAEqrkO

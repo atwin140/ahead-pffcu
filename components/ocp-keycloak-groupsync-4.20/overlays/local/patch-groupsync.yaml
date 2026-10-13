@@ -1,0 +1,19 @@
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: GroupSync
+metadata:
+  name: keycloak-groupsync
+  namespace: group-sync-operator
+spec:
+  providers:
+  - name: keycloak
+    keycloak:
+      url: https://keycloak.apps.acm.DOMAIN
+      realm: openshift
+      loginRealm: openshift
+      scope: sub
+      prune: false
+      credentialsSecret:
+        name: keycloak-group-sync
+        namespace: group-sync-operator
+      groups:
+      - openshift-access

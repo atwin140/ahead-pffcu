@@ -1,0 +1,37 @@
+apiVersion: platform.stackrox.io/v1alpha1
+kind: Central
+metadata:
+  name: stackrox-central-services
+  namespace: stackrox
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  central:
+    defaultTLSSecret:
+      name: central-tls
+    exposure:
+      route:
+        enabled: true
+    db:
+      isEnabled: Default
+      persistence:
+        persistentVolumeClaim:
+          claimName: central-db
+          storageClassName: synology-nfs-storage
+  egress:
+    connectivityPolicy: Online
+  scanner:
+    analyzer:
+      scaling:
+        autoScaling: Enabled
+        maxReplicas: 5
+        minReplicas: 2
+        replicas: 3
+    scannerComponent: Enabled
+  scannerV4:
+    db:
+      persistence:
+        persistentVolumeClaim:
+          claimName: scanner-v4-db
+          storageClassName: synology-nfs-storage
+    scannerComponent: Default

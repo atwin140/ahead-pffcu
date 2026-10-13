@@ -1,0 +1,14 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: ocs-client-operator
+  namespace: openshift-storage
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  channel: stable-4.22
+  installPlanApproval: Automatic
+  name: ocs-client-operator
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: ocs-client-operator.v4.22.4-rhodf

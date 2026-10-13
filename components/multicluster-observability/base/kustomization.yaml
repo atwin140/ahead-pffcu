@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- multicluster-observability.yaml
+- mco-addon.yaml
+- rbac.yaml
+- datasource.yaml
+- perses-dashboards/acm-multicluster-fleet-overview.yaml
+- perses-dashboards/acm-multicluster-workload-health.yaml
+- perses-dashboards/acm-multicluster-control-plane-etcd.yaml
+- thanos-object-storage-secret-sealed.yaml
+# - perses-secret-job.yaml
+- perses-provisioning-secret.yaml
+- perses-cr-patch.yaml
+
+commonLabels:
+  app.kubernetes.io/part-of: multicluster-observability
+  app.kubernetes.io/managed-by: argocd

@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- keycloak-group-sync.yaml
+- ocp-oauth.yaml
+- acs.yaml
+- cert-manager.yaml
+- compliance-operator.yaml
+- observability.yaml
+- sealed-secrets.yaml
+
+# - gitea.yaml

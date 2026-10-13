@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: keycloak-group-sync
+  namespace: openshift-gitops
+  labels:
+    app.kubernetes.io/part-of: cluster-onboarding
+    component: keycloak-group-sync
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: cluster-config
+  source:
+    repoURL: "git@github.com:atwin140/OCP-Cluster-config.git"
+    targetRevision: HEAD
+    path: components/ocp-keycloak-groupsync-4.20/overlays/local
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: group-sync-operator
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
+    - SkipDryRunOnMissingResource=true
+  ignoreDifferences:
+  - group: operators.coreos.com
+    kind: Subscription
+    jsonPointers:
+    - /status
+  revisionHistoryLimit: 10

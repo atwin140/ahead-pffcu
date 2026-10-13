@@ -1,0 +1,15 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: postgress-synology-storage
+provisioner: csi.san.synology.com
+parameters:
+  dsm: "10.0.0.2"
+  formatOptions: --nodiscard
+  fsType: ext4
+  location: /volume2
+# iSCSI/ext4 has no "mountPermissions" param (that's NFS-only in this driver) —
+# 777 on the mounted volume is applied via the StatefulSet's init container instead.
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
