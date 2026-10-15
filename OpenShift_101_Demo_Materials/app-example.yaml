@@ -1,0 +1,103 @@
+# Teaching skeleton. Replace the image before use and rehearse in training.
+# Requires an approved HTTP image that serves / on 8080 under the cluster SCC.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: ocp101  
+  annotations:
+    configmap.reloader.stakater.com/reload: "nginx-html"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: web
+          image: bitnami/nginx:latest
+          ports:
+            - name: http
+              containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5          
+          volumeMounts:
+            # Replace the default index.html with our ConfigMap's index.html
+            - name: html
+              mountPath: /app/index.html
+              subPath: index.html
+      volumes:
+        - name: html
+          configMap:
+            name: nginx-html
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: ocp101
+spec:
+  selector:
+    app: web
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: web
+  namespace: ocp101
+spec:
+  to:
+    kind: Service
+    name: web
+  port:
+    targetPort: http
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-html
+  namespace: ocp101
+data:
+  index.html: |
+    <!doctype html>
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <title>Hello from OpenShift</title>
+      </head>
+      <body>
+        <h1>Hakuna Matata - your NGINX page is live!</h1>
+        <p>Served from a Kubernetes ConfigMap, running on OpenShift.</p>
+      </body>
+    </html>
+---

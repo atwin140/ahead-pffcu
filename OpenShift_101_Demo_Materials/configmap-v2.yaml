@@ -1,0 +1,355 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-html
+  namespace: ocp101
+data:
+  index.html: |
+    <!doctype html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta name="theme-color" content="#080d22" />
+      <title>OpenShift Mission Control</title>
+      <style>
+        * { box-sizing: border-box; }
+
+        body {
+          margin: 0;
+          min-height: 100vh;
+          padding: 24px;
+          display: grid;
+          place-items: center;
+          font-family: system-ui, -apple-system, sans-serif;
+          color: #eef4ff;
+          background:
+            radial-gradient(ellipse at 20% 10%, #29336b 0%, transparent 45%),
+            radial-gradient(ellipse at 90% 80%, #341b57 0%, transparent 45%),
+            #080d22;
+        }
+
+        main {
+          width: min(100%, 800px);
+          padding: clamp(24px, 5vw, 48px);
+          text-align: center;
+          background: #0c142be8;
+          border: 1px solid #344365;
+          border-radius: 28px;
+          box-shadow: 0 24px 80px #0006;
+        }
+
+        .badge {
+          display: inline-block;
+          padding: 8px 14px;
+          border: 1px solid #337465;
+          border-radius: 999px;
+          color: #99ffce;
+          background: #102d2a;
+          font-size: 0.8rem;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+        }
+
+        h1 {
+          margin: 22px 0 12px;
+          font-size: clamp(2rem, 6vw, 3.5rem);
+          line-height: 1.1;
+        }
+
+        .intro {
+          margin: 0;
+          color: #bfcee9;
+          line-height: 1.6;
+        }
+
+        .scene {
+          position: relative;
+          height: 330px;
+          margin: 28px 0;
+          overflow: hidden;
+          border: 1px solid #344365;
+          border-radius: 20px;
+          background: linear-gradient(#070c21, #152750);
+        }
+
+        .stars {
+          position: absolute;
+          inset: 0;
+          background-image:
+            radial-gradient(circle, #fff 1px, transparent 1.5px),
+            radial-gradient(circle, #a7cfff 1px, transparent 1.5px);
+          background-size: 67px 73px, 113px 101px;
+          background-position: 12px 9px, 38px 43px;
+          opacity: 0.7;
+        }
+
+        .planet {
+          position: absolute;
+          top: 30px;
+          right: 35px;
+          width: 70px;
+          height: 70px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #9ee7ff, #4768d0 60%, #25294b);
+          box-shadow: 0 0 35px #83bbff33;
+        }
+
+        .horizon {
+          position: absolute;
+          bottom: -82px;
+          left: -10%;
+          width: 120%;
+          height: 130px;
+          border-radius: 50%;
+          background: #193346;
+          border-top: 3px solid #65c5e5;
+          box-shadow: 0 -8px 35px #65c5e533;
+        }
+
+        .pad {
+          position: absolute;
+          bottom: 47px;
+          left: calc(50% - 65px);
+          width: 130px;
+          height: 8px;
+          border-radius: 4px;
+          background: #64748b;
+        }
+
+        .rocket {
+          position: absolute;
+          bottom: 55px;
+          left: calc(50% - 40px);
+          width: 80px;
+          height: 148px;
+        }
+
+        .core {
+          position: absolute;
+          bottom: 0;
+          width: 24px;
+          height: 110px;
+          border-radius: 12px 12px 4px 4px;
+          background: linear-gradient(90deg, #94a3b8, #fff 45%, #cbd5e1);
+          border: 1px solid #94a3b8;
+        }
+
+        .center {
+          left: 28px;
+          height: 148px;
+          z-index: 2;
+        }
+
+        .left { left: 1px; }
+        .right { right: 1px; }
+
+        .core::before {
+          content: "";
+          position: absolute;
+          bottom: 16px;
+          left: -1px;
+          width: 24px;
+          height: 12px;
+          background: #1e293b;
+        }
+
+        .window {
+          position: absolute;
+          top: 30px;
+          left: 6px;
+          width: 10px;
+          height: 14px;
+          border-radius: 5px;
+          background: #0c2340;
+          border: 2px solid #64748b;
+        }
+
+        .flame {
+          position: absolute;
+          top: 100%;
+          left: 3px;
+          width: 16px;
+          height: 0;
+          opacity: 0;
+          border-radius: 0 0 50% 50%;
+          background: linear-gradient(#fff, #ffe570 25%, #ff832b 65%, transparent);
+          filter: drop-shadow(0 0 8px #ff9b35);
+        }
+
+        .launching .flame {
+          height: 65px;
+          opacity: 1;
+          animation: flicker 0.12s infinite alternate;
+        }
+
+        .launching .rocket {
+          animation: ascent 5s ease-in forwards;
+        }
+
+        .launching .left {
+          animation: separate-left 2s 2.5s ease-in forwards;
+        }
+
+        .launching .right {
+          animation: separate-right 2s 2.5s ease-in forwards;
+        }
+
+        .telemetry {
+          position: absolute;
+          top: 16px;
+          left: 16px;
+          text-align: left;
+          font: 0.75rem ui-monospace, monospace;
+          color: #99ffce;
+          line-height: 1.8;
+        }
+
+        .stack {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 10px;
+          margin-bottom: 24px;
+        }
+
+        .stack span {
+          padding: 8px 12px;
+          background: #17213b;
+          border: 1px solid #344365;
+          border-radius: 10px;
+          font-size: 0.9rem;
+        }
+
+        button {
+          padding: 14px 24px;
+          border: 0;
+          border-radius: 12px;
+          color: #071326;
+          background: #8ce6ff;
+          font: inherit;
+          font-weight: 800;
+          cursor: pointer;
+        }
+
+        button:hover { background: #b9f0ff; }
+        button:disabled { opacity: 0.65; cursor: progress; }
+        button:focus-visible { outline: 3px solid white; outline-offset: 5px; }
+
+        #message {
+          min-height: 3em;
+          margin: 18px 0 0;
+          color: #bfcee9;
+          line-height: 1.5;
+        }
+
+        footer { color: #9aaecf; font-size: 0.8rem; margin-top: 16px; }
+
+        @keyframes flicker {
+          from { transform: scaleY(0.85); }
+          to { transform: scaleY(1.15); }
+        }
+
+        @keyframes ascent {
+          0%, 10% { transform: translateY(0); }
+          45% { transform: translateY(-65px); }
+          65% { transform: translateY(-125px); }
+          100% { transform: translateY(-510px); }
+        }
+
+        @keyframes separate-left {
+          to { transform: translate(-95px, 160px) rotate(-28deg); opacity: 0; }
+        }
+
+        @keyframes separate-right {
+          to { transform: translate(95px, 160px) rotate(28deg); opacity: 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .launching .rocket,
+          .launching .core,
+          .launching .flame { animation: none; }
+          .launching .flame { height: 28px; }
+        }
+      </style>
+    </head>
+    <body>
+      <main>
+        <div class="badge">● MISSION CONTROL ONLINE</div>
+        <h1>Next stop: orbit.</h1>
+        <p class="intro">
+          Your NGINX page has cleared the launchpad.<br />
+          Powered by OpenShift. Fueled by a ConfigMap.
+        </p>
+
+        <div class="scene" id="scene" aria-hidden="true">
+          <div class="stars"></div>
+          <div class="planet"></div>
+          <div class="telemetry">
+            MISSION: OCP101<br />
+            PAYLOAD: INDEX.HTML<br />
+            <span id="flight">STATUS: READY</span>
+          </div>
+          <div class="horizon"></div>
+          <div class="pad"></div>
+          <div class="rocket">
+            <div class="core left"><div class="flame"></div></div>
+            <div class="core center">
+              <div class="window"></div>
+              <div class="flame"></div>
+            </div>
+            <div class="core right"><div class="flame"></div></div>
+          </div>
+        </div>
+
+        <div class="stack" aria-label="Website technology">
+          <span>🚀 OpenShift</span>
+          <span>🌐 NGINX</span>
+          <span>📦 ConfigMap</span>
+        </div>
+
+        <button id="launch" type="button">🚀 Launch Falcon Heavy</button>
+        <p id="message" role="status" aria-live="polite">
+          Three cores. One mission. Your HTML in orbit.
+        </p>
+        <footer>ocp101 • A playful Falcon Heavy–inspired launch</footer>
+      </main>
+
+      <script>
+        const button = document.getElementById("launch");
+        const scene = document.getElementById("scene");
+        const message = document.getElementById("message");
+        const flight = document.getElementById("flight");
+
+        const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        function report(text, status) {
+          message.textContent = text;
+          flight.textContent = "STATUS: " + status;
+        }
+
+        button.addEventListener("click", async () => {
+          button.disabled = true;
+          scene.classList.remove("launching");
+
+          for (let count = 3; count > 0; count--) {
+            button.textContent = `T−${count} seconds`;
+            report(`Launch sequence started. T minus ${count}…`, "COUNTDOWN");
+            await wait(1000);
+          }
+
+          scene.classList.add("launching");
+          button.textContent = "🔥 Engines firing!";
+          report("Liftoff! Your HTML is leaving the launchpad.", "ASCENT");
+
+          await wait(2500);
+          report("Side boosters separating. Center core continues upward!", "SEPARATION");
+
+          await wait(2500);
+          report("Orbit achieved. Your ConfigMap payload has been delivered. 🛰️", "IN ORBIT");
+          button.textContent = "🚀 Launch again";
+          button.disabled = false;
+        });
+      </script>
+    </body>
+    </html>

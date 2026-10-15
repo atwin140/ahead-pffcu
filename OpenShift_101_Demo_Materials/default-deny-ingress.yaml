@@ -1,0 +1,11 @@
+# Only for the empty ocp101-policy training namespace.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: ocp101-policy
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress: []
