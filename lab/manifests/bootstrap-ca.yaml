@@ -1,0 +1,28 @@
+# Lab only. Create a separate CA in each participant's isolated namespace.
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: lab-selfsigned
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: lab-root
+spec:
+  isCA: true
+  commonName: AHEAD PPFCU Disposable Lab Root
+  secretName: lab-root-ca
+  duration: 168h
+  renewBefore: 24h
+  privateKey:
+    algorithm: RSA
+    size: 2048
+    rotationPolicy: Always
+  usages:
+    - cert sign
+    - crl sign
+  issuerRef:
+    name: lab-selfsigned
+    kind: Issuer

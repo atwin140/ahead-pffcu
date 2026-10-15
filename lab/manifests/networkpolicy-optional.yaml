@@ -1,0 +1,24 @@
+# Optional instructor demo. Preflight router network mode and namespace labels.
+# This is ingress isolation only. No egress restrictions are configured here.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: http-lab-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app: http-lab
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              network.openshift.io/policy-group: ingress
+      ports:
+        - protocol: TCP
+          port: 8080
+    - from:
+        - podSelector: {}
+      ports:
+        - protocol: TCP
+          port: 8080

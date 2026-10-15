@@ -1,0 +1,40 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: http-lab-tls
+spec:
+  secretName: http-lab-tls
+  duration: 24h
+  renewBefore: 8h
+  dnsNames:
+    - APP_HOST
+  privateKey:
+    algorithm: RSA
+    size: 2048
+    rotationPolicy: Always
+  issuerRef:
+    name: lab-ca
+    kind: Issuer
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: http-lab
+  annotations:
+    route.openshift.io/termination: edge
+spec:
+  rules:
+    - host: APP_HOST
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: http-lab
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - APP_HOST
+      secretName: http-lab-tls

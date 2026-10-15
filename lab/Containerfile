@@ -1,0 +1,10 @@
+FROM registry.access.redhat.com/ubi9/python-312:latest
+USER 0
+WORKDIR /opt/app-root/src
+COPY app/app.py ./app.py
+RUN chmod 0444 /opt/app-root/src/app.py
+ARG APP_VERSION=v1
+ENV APP_VERSION=${APP_VERSION} PORT=8080 PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+USER 1001
+EXPOSE 8080
+ENTRYPOINT ["python3", "-u", "/opt/app-root/src/app.py"]

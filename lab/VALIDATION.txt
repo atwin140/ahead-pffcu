@@ -1,0 +1,42 @@
+Podman to OpenShift course validation
+Prepared 14 October 2026
+
+COMPLETED
+- Six automated Python checks passed. Coverage includes HTTP home/configuration,
+  health, normal and failed readiness with unaffected liveness, unknown routes,
+  query strings, successful placeholder rendering, and rejected invalid inputs.
+- All ten YAML documents parsed successfully.
+- Structural assertions passed for Deployment/pod/Service selectors, port mapping,
+  service account, ConfigMap reference, three probes, disabled API token mounting,
+  read-only root filesystem, dropped capabilities, and no fixed pod UID.
+- Certificate, TLS Secret, Ingress hostname/backend, Issuer and root CA references
+  were checked for consistency.
+- Official Red Hat, cert-manager and Podman documentation was consulted.
+- Instructor guide rendered and visually reviewed before packaging.
+
+NOT EXECUTED
+- Container image build or local container runtime test. Podman is installed but
+  its Linux backend was not running during preparation.
+- Registry login, image push or image pull.
+- Kubernetes/OpenShift API schema validation, admission or deployment.
+- Live CA issuance, generated Route admission, external HTTPS, or router renewal.
+- Live scaling, pod exec, probes under OpenShift, v2 rollout, or rollback.
+- Optional NetworkPolicy enforcement.
+
+REQUIRED BEFORE CLASS
+Run the complete course under a learner account on the target lab. Record actual
+OpenShift/cert-manager versions, image/base digests, CPU architecture, registry,
+DNS, ingress class/shard, quota and trust settings. Verify the served certificate
+changes after reissue. Validate optional NetworkPolicy against router network mode.
+Prepare fallback v1/v2 image digests. No production deployment is implied.
+
+The default disposable root CA expires after seven days; leaf certificates expire
+after one day. Recreate disposable lab resources for a later class. Do not use this
+root or the Python teaching HTTP server as a production implementation.
+
+REVISION FOR CONFIRMED AUDIENCE AND VERSION
+Target updated to OpenShift 4.22; exact patch and cert-manager release unknown.
+References rechecked against Red Hat 4.22 documentation. Audience is engineers
+new to containers and Kubernetes. Timing totals 120 minutes; renewal and v2/undo
+are instructor demonstrations using pre-staged images. Application and manifests
+are unchanged. Target-environment rehearsal remains required.
